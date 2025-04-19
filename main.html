@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulačka</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f7f7f7;
+            margin: 0;
+        }
+
+        .calculator {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+        }
+
+        .result {
+            height: 50px;
+            font-size: 24px;
+            text-align: right;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            background-color: #f1f1f1;
+            color: #333;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .btn {
+            width: 50px;
+            aspect-ratio: 1 / 1;
+            border: none;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .equals-button {
+            grid-column: span 4;
+            background-color: #4caf50;
+            color: white;
+            font-weight: bold;
+        }
+
+        .sqrt-button {
+            background-color: #2196F3;
+            color: white;
+            font-weight: bold;
+            margin-right: 173px;
+        }
+
+        .button-row {
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" id="result" class="result" disabled>
+        <div class="buttons">
+            <button class="btn" onclick="appendToResult('7')">7</button>
+            <button class="btn" onclick="appendToResult('8')">8</button>
+            <button class="btn" onclick="appendToResult('9')">9</button>
+            <button class="btn" onclick="appendToResult('/')">/</button>
+
+            <button class="btn" onclick="appendToResult('4')">4</button>
+            <button class="btn" onclick="appendToResult('5')">5</button>
+            <button class="btn" onclick="appendToResult('6')">6</button>
+            <button class="btn" onclick="appendToResult('*')">*</button>
+
+            <button class="btn" onclick="appendToResult('1')">1</button>
+            <button class="btn" onclick="appendToResult('2')">2</button>
+            <button class="btn" onclick="appendToResult('3')">3</button>
+            <button class="btn" onclick="appendToResult('-')">-</button>
+
+            <button class="btn" onclick="appendToResult('0')">0</button>
+            <button class="btn" onclick="appendToResult('.')">.</button>
+            <button class="btn" onclick="clearResult()">C</button>
+            <button class="btn" onclick="appendToResult('+')">+</button>
+        </div>
+        <div class="button-row">
+            <button class="btn equals-button" onclick="calculateResult()">=</button>
+            <button class="btn sqrt-button" onclick="addSquareRoot()">√</button>
+        </div>
+    </div>
+
+    <script>
+        // Funkcia na pripojenie čísla alebo operácie do výsledku
+        function appendToResult(value) {
+            const result = document.getElementById('result');
+            if (result.value === 'Chyba') {
+                result.value = ''; // Ak je tam chyba, resetujeme výsledok
+            }
+            result.value += value;
+        }
+
+        // Funkcia na vymazanie výsledku
+        function clearResult() {
+            document.getElementById('result').value = '';
+        }
+
+        // Funkcia na pridanie funkcie odmocniny do výsledku
+        function addSquareRoot() {
+            const result = document.getElementById('result');
+            if (result.value === 'Chyba') {
+                result.value = ''; // Ak je tam chyba, resetujeme výsledok
+            }
+            result.value += '√';
+        }
+
+        function calculateResult() {
+    const result = document.getElementById('result');
+    let expression = result.value;
+
+    try {
+        // spočítame, koľko √ je vo výraze
+        const sqrtCount = (expression.match(/√/g) || []).length;
+        // nahradíme všetky √
+        expression = expression.replace(/√/g, 'Math.sqrt(');
+        // pridáme rovnaký počet ')'
+        expression += ')'.repeat(sqrtCount);
+
+        // vykonáme výpočet
+        const calcResult = Function('return ' + expression)();
+        if (isNaN(calcResult)) throw new Error('Invalid result');
+
+        result.value = calcResult;
+    } catch (e) {
+        result.value = 'Chyba';
+    }
+}
+
+    </script>
+</body>
+</shtml>
